@@ -1,0 +1,69 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h3 style="text-align:center">Display Tuple Information for Each Table</h3>
+<table class="tg">
+  <tr>
+    <th class="tg-0lax">Table Name</th>
+    <th class="tg-0lax">Count</th>
+  </tr>
+  <tr>
+    <td class="tg-0lax">University:</td>
+    <td class="tg-0lax">{{result[0]}}</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">Criminal:</td>
+    <td class="tg-0lax">{{result[1]}}</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">Arrest:</td>
+    <td class="tg-0lax">{{result[2]}}</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">Disciplinary_Action:</td>
+    <td class="tg-0lax">{{result[3]}}</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">Vawa:</td>
+    <td class="tg-0lax">{{result[4]}}</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">Hate:</td>
+    <td class="tg-0lax">{{result[5]}}</td>
+  </tr>
+  
+</table>
+
+<table>
+	<tr>
+    <th class="tgg">Total:</th>
+    <th class="tgg">{{result[6]}}</th>
+  </tr>
+</table>
+
+<!-- <form>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+            <label class="control-label" for="likedcolors">University: {{result[0]}}</label>
+        </div>
+        <div class="col-md-4">
+           <div class="form-group">
+            <label class="control-label">Criminal:</label>
+        </div>
+        <div class="col-md-4">
+           <div class="form-group">
+            <label class="control-label">Arrest:</label>
+        </div>
+        <div class="col-md-4">
+           <div class="form-group">
+            <label class="control-label">disciplinary_action:</label>
+        </div>
+        <div class="col-md-4">
+           <div class="form-group">
+            <label class="control-label">Criminal:</label>
+        </div>
+    </div>
+</form> -->
+
+{% endblock %}

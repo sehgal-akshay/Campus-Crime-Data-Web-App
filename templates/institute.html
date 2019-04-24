@@ -1,0 +1,259 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h3 style="text-align:center">Display Institute-wise crime analysis</h3>
+<form name="inst" action="{{ url_for('institute') }}" method='POST'>
+    <ul class="form-style-1">
+        <li>
+            <label>Institue Name:</label>
+            {% if store_inst_name|length > 0 %}
+                <input class="typeahead" id="institute1" name="institute" type="text" placeholder="{{store_inst_name}}" value="{{store_inst_name}}">
+            {% else %}
+                <input class="typeahead" id="institute2" name="institute" type="text" placeholder="Type institute name ...">
+            {% endif %}
+        </li>
+        <li>
+            <label>Location:</label>
+            <select name="location" id="location" class="field-select">
+                {% for loc in locations %}
+                <option value="{{loc}}">{{loc}}</option>
+                {% endfor %}
+            </select>
+        </li>
+
+        <li style="text-align:center">
+            <input type="submit" value="Submit" />
+        </li>
+    </ul>
+</form>
+
+{% if ((set_arrest|sum + set_vawa|sum + set_disc|sum + set_criminal|sum + set_hate|sum) == 0) and (message == 1)  %}
+    <script>
+        alert("No Data Found !")
+    </script>
+{% endif %}
+
+<div class="container main" style="margin-top: 3%;" align="center">
+    <!-- <div class="container main-info"> -->
+    <ul class="list-inline">
+        {% if set_arrest|sum > 0 %}
+            <li>
+                <canvas id="chart_arrest" width="200" height="200" ></canvas>
+            </li>
+        {% endif %}
+
+        {% if set_vawa|sum > 0 %}
+        <li>
+            <canvas id="chart_vawa" width="200" height="200" ></canvas>
+        </li>
+        {% endif %}
+
+        {% if set_disc|sum > 0 %}
+        <li>
+            <canvas id="chart_disc" width="200" height="200" ></canvas>
+        </li>
+        {% endif %}
+
+        {% if set_criminal|sum > 0 %}
+        <li>
+            <canvas id="chart_criminal" width="200" height="200" ></canvas>
+        </li>
+        {% endif %}
+
+        {% if set_hate|sum > 0 %}
+        <li>
+            <canvas id="chart_hate" width="200" height="200"></canvas>
+        </li>
+        {% endif %}
+    </ul>
+    <!-- </div> -->
+</div>
+
+<script>
+
+    // get pie chart canvas
+
+    {% if set_hate|sum > 0 %}
+    var mychartHate = document.getElementById("chart_hate");
+    var myPieChartHate = new Chart(mychartHate,{
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: {{set_hate}},
+        backgroundColor: [ "#F7464A", "#8F19D4", "#C1D419", "#46BFBD", "#FDB45C", "#FEDCBA","#ABCDEF", "#DDDDDD", "#ABCABC", "#F7464A", "#46BFBD", "#FDB45C", "#F7464A", "#46BFBD"  ]
+    }],
+    // These labels appear in the legend and in the tooltips when hovering different arcs
+    labels: ["Murder","Rape","Fondling","Incest","Statutory Rape","Robbery","Aggravated Assaults","Burglary","Motor Vehicle Theft", "Arson", "Vandalism", "Intimidation",
+        "Simple Assault", "Larceny"]
+    },
+    options: {
+        responsive: false,
+        legend: {
+            display: false
+        },
+        title:{
+            display:true,
+                text: 'Hate'
+        },
+        elements: {
+            arc: {
+                borderWidth: 0
+            }
+        },
+        maintainAspectRatio: false,
+    }
+    });
+    {% endif %}
+
+    {% if set_criminal|sum > 0 %}
+    var mychartCriminal = document.getElementById("chart_criminal");
+    var myPieChartCriminal = new Chart(mychartCriminal,{
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: {{set_criminal}},
+        backgroundColor: [ "#F7464A", "#46BFBD","#8F19D4", "#C1D419", "#FDB45C", "#FEDCBA","#ABCDEF", "#DDDDDD", "#ABCABC"  ]
+    }],
+    // These labels appear in the legend and in the tooltips when hovering different arcs
+    labels: ["Murder","Negligent Manslaughter","Rape","Fondling","Incest","Statutory Rape","Robbery","Aggravated Assaults","Burglary","Motor Vehicle Theft", "Arson"]
+    },
+    options: {
+        responsive: false,
+        legend: {
+            display: false
+        },
+        title:{
+            display:true,
+                text: 'Criminal'
+        },
+        elements: {
+            arc: {
+                borderWidth: 0
+            }
+        },
+        maintainAspectRatio: false,
+    }
+    });
+    {% endif %}
+
+    {% if set_disc|sum > 0 %}
+    var mychartDisc = document.getElementById("chart_disc");
+    var myPieChartDisc = new Chart(mychartDisc,{
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: {{set_disc}},
+        backgroundColor: [ "#19D464", "#8F19D4", "#C1D419"],
+    }],
+    // These labels appear in the legend and in the tooltips when hovering different arcs
+    labels: ["Weapons","Drug","Liquor"],
+    },
+    options: {
+        responsive: false,
+        legend: {
+            display: false
+        },
+        title:{
+            display:true,
+                text: 'Disciplinary Action'
+        },
+        elements: {
+            arc: {
+                borderWidth: 0
+            }
+        },
+        maintainAspectRatio: false,
+    }
+    });
+    {% endif %}
+
+    {% if set_vawa|sum > 0 %}
+    var mychartVawa = document.getElementById("chart_vawa");
+    var myPieChartVawa = new Chart(mychartVawa,{
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: {{set_vawa}},
+        backgroundColor: [ "#3219D4", "#D46A19", "#D419A8"],
+    }],
+    // These labels appear in the legend and in the tooltips when hovering different arcs
+    labels: ["Domestic Violence","Dating Violence","Stalking"],
+    },
+    options: {
+        responsive: false,
+        legend: {
+            display: false
+        },
+        title:{
+            display:true,
+                text: 'Violence Against Women'
+        },
+        elements: {
+            arc: {
+                borderWidth: 0
+            }
+        },
+        maintainAspectRatio: false,
+    }
+    });
+    {% endif%}
+
+    {% if set_arrest|sum > 0 %}
+    var mychartArrest = document.getElementById("chart_arrest");
+    // mychartArrest.height = 200;
+    var myPieChartArrest = new Chart(mychartArrest,{
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: {{set_arrest}},
+        backgroundColor: [ "#3219D4", "#D46A19", "#D419A8"],
+    }],
+    // These labels appear in the legend and in the tooltips when hovering different arcs
+    labels: ["Weapons","Drug","Liquor"],
+    },
+    options: {
+        responsive: false,
+        legend: {
+            display: false
+        },
+        title:{
+            display:true,
+                text: 'Arrest'
+        },
+        elements: {
+            arc: {
+                borderWidth: 0
+            }
+        },
+        maintainAspectRatio: false,
+    }
+    });
+    {% endif %}
+
+    $('.typeahead').typeahead(null, {
+        display: 'name',
+        source: new Bloodhound({
+            datumTokenizer: function(datum) {
+                return Bloodhound.tokenizers.whitespace(datum.value);
+            },
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            remote: {
+                wildcard: '%QUERY',
+                url: '/institutelikelist?query=%QUERY',
+                transform: function(response) {
+                    console.log(response)
+                    // Map the remote source JSON array to a JavaScript object array
+                    return $.map(response, function(item) {
+                        return {
+                            name: item
+                        };
+                    });
+                }
+            }
+        })
+    });
+
+</script>
+{% endblock %}
+

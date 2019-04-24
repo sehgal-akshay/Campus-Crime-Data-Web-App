@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- <h3>Institute trends:</h3> -->
+<form name="rankings" action="{{ url_for('ranking') }}" method="POST">
+    <ul class="form-style-1">
+        <li>
+            <label>Ranks based on:</label>
+            <select name="rank_type" class="field-select" id="catdd">
+                {% for type in rank_type %}
+                    <option value="{{type}}">{{type}}</option>
+                {% endfor %}
+            </select>
+        </li>
+        <li>
+            <label>Crime Type:</label>
+            <select name="trend_type" class="field-select">
+                {% for trend in trends %}
+                    <option value="{{trend}}">{{trend}}</option>
+                {% endfor %}
+            </select>
+        </li>
+        <li id="category" class='line-block'>
+            <label>Category type:</label>
+            <select name="category" class="field-select">
+                {% for category in categories %}
+                    <option value="{{category}}">{{category}}</option>
+                {% endfor %}
+            </select>
+        </li>
+	        <div align="center">
+	            <input type="submit" value="Submit" />
+	        </div>
+    </ul>
+</form>
+{% if result %}
+        <hr>
+        <div class="container" align="center">
+            <h3>TOP 50 Ranked Unsafe {{rank_element}}:</h3>
+            <table>
+                <tr>
+                    <th>Rank</th>
+                    <th>{{rank_element}}</th>
+                    <th>Count</th>
+                </tr>
+                {% for row in result %}
+                    <tr>
+                        <td>{{row.rank}}</td>
+                        <td>{{row.element}}</td>
+                        <td>{{row.count}}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endif %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            var category = $('#catdd').find("option:first-child").val().toLowerCase();
+            console.log(category);
+            if (category != 'university category') {
+                $('#category').hide();
+            };
+
+            $('#catdd').change(function() {
+                var selectedId= $(this).find(':selected').val().replace(/\s/g, "").toLowerCase();
+                console.log(selectedId);
+                if (selectedId == 'universitycategory')
+                    $('.line-block').hide().filter('#category').show();
+                else
+                    $('.line-block').hide();
+            });
+
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <form class="form-group" id="crimeform" action="{{ url_for('geographicaltrend') }}" method="post">
+            <ul class="form-style-1">
+                <li id = "category" >
+                    <label>Stat Type:</label>
+                    <select id="category" name="cat_type" class="field-select" >
+                        {% for type in stat_type %}
+                            {% if type.lower() == 'student count' %}
+                                <option value="student">{{type}}</option>
+                            {% elif type.lower() == 'control of university' %}
+                                <option value="sector">{{type}}</option>
+                            {% else %}
+                                <option value="{{type.lower()}}">{{type}}</option>
+                            {% endif %}
+                        {% endfor %}
+                        <!-- <option value="safety">Safety</option> -->
+                    </select>
+                </li>
+                <li id = "crime" class="line-block">
+                    <label>Criminal Offence Type:</label>
+                    <select name="crime_type_input" class="field-select" >
+                        {% for crime in crime_type %}
+                            <option value="{{crime.lower()}}">{{crime}}</option>
+                        {% endfor %}
+                        <!-- <option value="arrest" selected="selected">Arrest</option>
+                        <option value="crime">Criminal</option>
+                        <option value="disciplinary">Disciplinary</option>
+                        <option value="hate">Hate</option>
+                        <option value="vawa">Vawa</option> -->
+                    </select>
+                </li>
+                <li id = "sector" class="line-block">
+                    <label>Control of University:</label>
+                    <select name="institute_sector" class="field-select" >
+                        {% for type in sector_type %}
+                            {% if type.lower() == 'public' %}
+                                <option value="1,4,7">{{type}}</option>
+                            {% elif type.lower() == 'private non-profit' %}
+                                <option value="2,5,8">{{type}}</option>
+                            {% else %}
+                                <option value="3,6,9">{{type}}</option>
+                            {% endif %}
+                        {% endfor %}
+                        <!-- <option value="1,4,7" selected="selected">Public</option>
+                        <option value="2,5,8">Private non-profit</option>
+                        <option value="3,6,9">Private for-profit</option> -->
+                    </select>
+                </li>
+
+                <li>
+                    <input type="submit" value="Submit" />
+                </li>
+
+            </ul>
+        </form>
+    {% if result %}
+        <div class="container" align="center">
+            <ul class="list-inline">
+                <li>
+                    <label>{{max_label}}</label>
+                </li>
+                <li>
+                    <div class="foo .db-inline" style="float:left;width:40px;height:20px;margin:5px;border:1px solid rgba(0, 0, 0, .2);background:{{color_codes['max']}}">
+                    </div>
+                </li>
+                
+            </ul>
+            <ul class="list-inline">
+                <li>
+                    <label>{{min_label}}</label>
+                </li>
+                <li>
+                    <div class="foo" style="float:left;width:40px;height:20px;margin:5px;border:1px solid rgba(0, 0, 0, .2);background:{{color_codes['min']}}">
+                    </div>
+                </li>
+            </ul>
+            
+            <center><div id="tooltip"></div></center><!-- div to hold tooltip. -->
+            <center><svg width="960" height="600" id="statesvg"></svg></center> <!-- svg to hold the map. -->
+        </div>
+    {% endif %}
+    <script type="text/javascript" src="{{ url_for('static', filename='uStates.js') }}"></script> <!-- creates uStates. -->
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script>
+
+        function tooltipHtml(n, d){ /* function to create html content string in tooltip div. */
+            return "<h4>"+n+"</h4><table>"+
+                "<tr><td>Crimes</td><td>"+(d.crime)+"</td></tr>"+
+                "</table>";
+        }
+
+        var sampleData ={}; /* Sample random data. */
+        var in_range_data = JSON.parse('{{in_range_result | tojson}}');
+        var actual_count = JSON.parse('{{ actual_count | tojson }}'); 
+        ["HI", "AK", "FL", "SC", "GA", "AL", "NC", "TN", "RI", "CT", "MA",
+        "ME", "NH", "VT", "NY", "NJ", "PA", "DE", "MD", "WV", "KY", "OH", 
+        "MI", "WY", "MT", "ID", "WA", "DC", "TX", "CA", "AZ", "NV", "UT", 
+        "CO", "NM", "OR", "ND", "SD", "NE", "IA", "MS", "IN", "IL", "MN", 
+        "WI", "MO", "AR", "OK", "KS", "LA", "VA"].forEach(function(d){
+                var crime = in_range_data[d];
+                sampleData[d]={crime:actual_count[d], color:d3.interpolate("{{color_codes['min']}}", "{{color_codes['max']}}")(crime / 100)};
+            });
+
+
+        /* draw states on id #statesvg */
+        uStates.draw("#statesvg", sampleData, tooltipHtml);
+
+        d3.select(self.frameElement).style("height", "600px");
+
+        $(document).ready(function() {
+
+            var category = $('#category').find("option:first-child").val().toLowerCase();
+            console.log(category);
+            $('#sector').hide();
+            if (category != 'crime') {
+                $('#crime').hide();
+                if (category == 'sector') {
+                    $('#sector').show();
+                };
+            };
+
+            $('#category').change(function() {
+                alert("here")
+                var selectedId= $(this).find(':selected').val().replace(/\s/g, "").toLowerCase();
+                console.log(selectedId);
+                if (selectedId == 'crime' || selectedId == 'sector')
+                    $('.line-block').hide().filter('#' + selectedId).show();
+                else
+                    $('.line-block').hide();
+            });
+
+        });
+    </script>
+{% endblock %}

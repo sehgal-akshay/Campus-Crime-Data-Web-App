@@ -1,0 +1,1 @@
+function disc_result(){}
