@@ -13,18 +13,19 @@
     <script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
     {% if title %}
-        <title>Campus Safety - {{ title }}</title>
+        <title>CCD - {{ title }}</title>
     {% else %}
-        <title>Campus Safety</title>
+        <title>CCD</title>
     {% endif %}
     
 </head>
 <body>
 
     <header class="site-header">
-      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+      <!-- <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
         <div class="container">
           <a class="navbar-brand mr-4" href="/">Campus Safety</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,8 +33,8 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarToggle">
             
-            <!-- Navbar Right Side -->
-            <div class="navbar-nav">
+             Navbar Right Side -->
+            <!-- <div class="navbar-nav">
               {%if title == 'register'%}
               <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
               {% endif %}
@@ -47,9 +48,64 @@
             </div>
           </div>
         </div>
-      </nav>
+      </nav> -->
+      
+      {%if title !='login' and title!='register'%}
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        
+      <a class="navbar-brand" href="#">CCD</a>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('home') }}">Home </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('institute') }}">University</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('compare_univ') }}">Comparison</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('pattern') }}">Data Pattern</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('ranking') }}">Ranking</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('prediction') }}">Prediction</a>
+      </li>
+      
+      <li class="nav-item dropdown" align="right">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          User
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{{ url_for('data_information') }}">Tuple Info</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{{ url_for('login') }}">Sign Out</a>  
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+{%else%}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark nav-fill w-100 fixed-top">
+        
+      <a class="navbar-brand" href="#">CCD</a>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown" align="right">
+      </li>
+    </ul>
+  </div>
+</nav>
+
+ {%endif%}
     </header>
-    <main role="main" class="container">
+    
+    <main role="main">
       <div class="row">
         <div class="col-md-8">
           {% with messages = get_flashed_messages(with_categories=true) %}
@@ -63,22 +119,7 @@
           {% endwith %}
           {% block content %}{% endblock %}
         </div>
-        <div class="col-md-4">
-          <div class="content-section">
-            <h3>Options</h3>
-        <ul class="list-group">
-            <li><a href="{{ url_for('home') }}">Home</a></li>
-            <li><a href="{{ url_for('er') }}">ER Diagram</a></li>
-            <li><a href="{{ url_for('institute') }}">Single Institute</a></li>
-            <li><a href="{{ url_for('compare_univ') }}">Compare Institutes</a></li>
-            <li><a href="{{ url_for('pattern') }}">Various Trends</a></li>
-            <li><a href="{{ url_for('ranking') }}">Rankings</a></li>
-            <li><a href="{{ url_for('geographicaltrend') }}">Geographical Analysis</a></li>
-            <li><a href="{{ url_for('prediction') }}">Prediction</a></li>
-            <li><a href="{{ url_for('data_information') }}">Get Data Information</a></li>
-        </ul>
-          </div>
-        </div>
+      
       </div>
     </main>
 
@@ -88,8 +129,7 @@
     
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
+    
     
 </body>
 </html>

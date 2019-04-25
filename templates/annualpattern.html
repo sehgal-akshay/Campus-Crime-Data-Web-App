@@ -1,12 +1,12 @@
 {% extends "layout.html" %}
 
 {% block content %}
-
+<title>pattern</title>
     <h3 >
 
-        <div style="text-align:center">Data Pattern</div>
-        <div style="text-align:center">Please Select the Input Parameters</div>
-        <form class="form-group" id="crimeform" action="/pattern" method="post">
+        <div style="color:blue; text-align:center">Data Pattern</div>
+        <div style="color:blue;text-align:center">Please Select the Input Parameters</div>
+        <form class="form-group form-control-sm" id="crimeform" action="/pattern" method="post">
             <ul class="form-style-1">
                 <li id = "category" >
                     <label>Category Type:</label>
@@ -194,9 +194,9 @@
                     <input class="typeahead" name="institute_input" type="text" placeholder="Type institute name ...">
 
                 </li>
-                <li>
+                <div style="text-align:center">
                     <input type="submit" value="Submit" />
-                </li>
+                </div>
 
             </ul>
         </form>

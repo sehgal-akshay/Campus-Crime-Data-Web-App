@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<title>ranking</title>
 <!-- <h3>Institute trends:</h3> -->
 <form name="rankings" action="{{ url_for('ranking') }}" method="POST">
     <ul class="form-style-1">
@@ -20,14 +21,14 @@
                 {% endfor %}
             </select>
         </li>
-        <li id="category" class='line-block'>
+        <!-- <li id="category" class='line-block'>
             <label>Category type:</label>
             <select name="category" class="field-select">
                 {% for category in categories %}
                     <option value="{{category}}">{{category}}</option>
                 {% endfor %}
             </select>
-        </li>
+        </li> -->
 	        <div align="center">
 	            <input type="submit" value="Submit" />
 	        </div>

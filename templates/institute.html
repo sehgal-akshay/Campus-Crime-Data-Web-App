@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
-
 {% block content %}
-
+<title>university</title>
 <h3 style="text-align:center">Display Institute-wise crime analysis</h3>
 <form name="inst" action="{{ url_for('institute') }}" method='POST'>
     <ul class="form-style-1">
@@ -22,9 +21,9 @@
             </select>
         </li>
 
-        <li style="text-align:center">
+        <div style="text-align:center">
             <input type="submit" value="Submit" />
-        </li>
+        </div>
     </ul>
 </form>
 

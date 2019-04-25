@@ -10,7 +10,7 @@ from applogic import ranking as rank
 from applogic import data_info as di
 from applogic import prediction as pred
 
-app = Flask('Campus Safety For You')
+app = Flask('CCD')
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 
 @app.route("/home")
@@ -294,41 +294,51 @@ def pattern():
         if category_type == 'CRIMINAL':
             if crime_type == 'ALL':
                 label = 'ALL'
+                print(filterString)
                 result = ap.get_criminal_offences_pattern(filterString)
             else:
+                print(filterString)
                 result = ap.get_generic_pattern(category_type, crime_type, filterString)
                 label = crime_type
 
         elif category_type == 'HATE':
             if hate_type == 'ALL':
                 label = 'ALL'
+                print(filterString)
                 result = ap.get_hate_pattern(filterString)
             else:
                 label = hate_type
+                print(filterString)
                 result = ap.get_generic_pattern(category_type, hate_type, filterString)
 
         elif category_type == 'VAWA':
             if vawa_type == 'ALL':
                 label = 'ALL'
+                print(filterString)
                 result = ap.get_vawa_pattern(filterString)
             else:
                 label = vawa_type
+                print(filterString)
                 result = ap.get_generic_pattern(category_type, vawa_type, filterString)
 
         elif category_type == 'ARREST':
             if arrest_type == 'ALL':
                 label = 'ALL'
+                print(filterString)
                 result = ap.get_arrest_pattern(filterString)
             else:
                 label = arrest_type
+                print(filterString)
                 result = ap.get_generic_pattern(category_type, arrest_type, filterString)
 
         elif category_type == 'DISCIPLINARY_ACTION':
             if da_type == 'ALL':
                 label = 'ALL'
+                print(filterString)
                 result = ap.get_disciplinary_pattern(filterString)
             else:
                 label = da_type
+                print(filterString)
                 result = ap.get_generic_pattern(category_type, da_type, filterString)
 
         print(result)
@@ -339,9 +349,9 @@ def pattern():
 
 @app.route("/ranking", methods=['GET', 'POST'])
 def ranking():
-    rank_types = ['University', 'State', 'University Category']
+    rank_types = ['University', 'State']
     trends = ['Arrest', 'Crime', 'Disciplinary', 'Hate', 'Vawa']
-    categories = ['Huge', 'Large', 'Medium', 'Small']
+    # categories = ['Huge', 'Large', 'Medium', 'Small']
     years = [2015, 2016, 2017]
     result = []
     year = None
@@ -359,19 +369,19 @@ def ranking():
         if rank_type == "University":
             func = getattr(rank, f"get_{trend_type.lower()}_university_ranks")
             result = func()
-        elif rank_type == 'University Category':
-            print("in University category")
-            category = form_data['category']
-            print(f"received category: {category}")
-            categories.remove(category)
-            categories.insert(0, category)
-            func = getattr(rank, f"get_categorize_{trend_type.lower()}_university_ranks")
-            result = func(category.lower())
+        # elif rank_type == 'University Category':
+        #     print("in University category")
+        #     category = form_data['category']
+        #     print(f"received category: {category}")
+        #     categories.remove(category)
+        #     categories.insert(0, category)
+        #     func = getattr(rank, f"get_categorize_{trend_type.lower()}_university_ranks")
+        #     result = func(category.lower())
         else:
             func = getattr(rank, f"get_{trend_type.lower()}_state_ranks")
             result = func()
         print(f"result of arrest rank query: {result}")
-    return render_template("ranking.html", title="Ranking Stats", rank_type=rank_types, trends=trends, years=years, result=result, year_in_consideration=year, rank_element=rank_type, categories=categories)
+    return render_template("ranking.html", title="Ranking Stats", rank_type=rank_types, trends=trends, years=years, result=result, year_in_consideration=year, rank_element=rank_type) #categories=categories)
 
 @app.route("/data_information", methods=['GET'])
 def data_information():
@@ -394,49 +404,55 @@ def trends():
 
 @app.route("/prediction", methods=['GET', 'POST'])
 def prediction():
-    cat_types = ['Criminal', 'Hate', 'Vawa', 'Disciplinary', 'Arrest']
+    cat_types = ['All','Criminal', 'Hate', 'Vawa', 'Disciplinary', 'Arrest']
+    cat_type = []
+    sub_cat_type=[]
     result = []
+    result1=[]
     message = 0
     values_data = [0]
+    avg_val = None
+    risk_factor = None
+    if request.method == 'GET':
+        return render_template("prediction.html", cat_types=cat_types, result=result)
+    
     if request.method == 'POST':
         message = 1
         form_data = request.form
+        print("prediction")
+        print(form_data)
         university = form_data['institute']
         cat_type = form_data['cat_type']
-        print(university)
-        print(cat_type)
-        result1 = pred.get_prediction_data(form_data['institute'],form_data['cat_type'])
-        if cat_type == 'Arrest':
-            labels_data = ["Weapons","Drug","Liquor"]
-            #values_arrest = result1[3]
-            values_data = result1[0]
-            print(values_data)
-            colors_data = [ "#F7464A", "#46BFBD", "#FDB45C"]
 
-    #     form_data = request.form
-    #     rank_type = form_data['rank_type']
-    #     trend_type = form_data['trend_type']
-    #     trends.remove(trend_type)
-    #     trends.insert(0, trend_type)
-    #     #year = form_data['year']
-    #     print(f"rank_type: {rank_type}")
-    #     if rank_type == "University":
-    #         func = getattr(rank, f"get_{trend_type.lower()}_university_ranks")
-    #         result = func()
-    #     elif rank_type == 'University Category':
-    #         print("in University category")
-    #         category = form_data['category']
-    #         print(f"received category: {category}")
-    #         categories.remove(category)
-    #         categories.insert(0, category)
-    #         func = getattr(rank, f"get_categorize_{trend_type.lower()}_university_ranks")
-    #         result = func(category.lower())
-    #     else:
-    #         func = getattr(rank, f"get_{trend_type.lower()}_state_ranks")
-    #         result = func()
-    #     print(f"result of arrest rank query: {result}")
-    #return render_template("ranking.html", title="Ranking Stats", rank_type=rank_types, trends=trends, years=years, result=result, year_in_consideration=year, rank_element=rank_type, categories=categories)
-    return render_template("prediction.html", cat_types=cat_types, set_data = list(values_data))
+        if cat_type == 'Criminal':
+            sub_cat_type = form_data['crime_type_input']
+        elif cat_type == 'Hate':
+            sub_cat_type = form_data['hate_type_input']
+        elif cat_type == 'Vawa':
+            sub_cat_type = form_data['vawa_type_input']
+        elif cat_type == 'Disciplinary':
+            sub_cat_type = form_data['da_type_input']
+        elif cat_type == 'Arrest':
+            sub_cat_type = form_data['arrest_type_input']           
+        
+        if cat_type=='All':
+            print("all cat")
+            result = pred.get_prediction_data_all(form_data['institute'])
+        elif cat_type!='ALL' and sub_cat_type == 'ALL':
+            print("all subcat")
+            result = pred.get_prediction_data_cat(form_data['institute'], form_data['cat_type'])
+        else:
+            print("subcat")
+            result = pred.get_prediction_data_subcat(form_data['institute'], form_data['cat_type'], sub_cat_type)
+
+        # else:
+        #     print("in sub cat")
+        #     result = pred.get_prediction_subcat_data(form_data['institute'],form_data['cat_type'],form_data['sub_cat_type'])
+        result1 = result[0]
+        risk_factor = result1[0]
+        avg_val = result1[1]
+        #print(avg_val[0])
+        return render_template("prediction.html", cat_types=cat_types, risk_factor=risk_factor, result=round(avg_val,2), message=message)
 
 
 
@@ -444,4 +460,4 @@ def prediction():
 # if __name__ == '__main__':
 #     app.run(host='0.0.0.0', port=5000, debug=True)
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()

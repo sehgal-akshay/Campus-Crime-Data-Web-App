@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<title>compare</title>
 	<form name="inst" action="{{ url_for('compare_univ') }}" method='POST'>
         	<label>Select the number of universities to compare:</label>
                 <select id ="unicount" name="unicount" class="field-select">

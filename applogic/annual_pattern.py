@@ -13,8 +13,7 @@ def get_generic_pattern(category, subcategory, condition):
         sub_category_type = subcategory,
         category_type = category,
         filter_condition = condition
-    )
-    ).fetchall()
+    )).fetchall()
     return output
 
 def get_criminal_offences_pattern(condition):
